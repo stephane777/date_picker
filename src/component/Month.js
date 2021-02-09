@@ -1,4 +1,5 @@
 import React from "react";
+import Grid from "./Grid";
 
 const Month = () => {
 	const [date, setDate] = React.useState({
@@ -15,8 +16,9 @@ const Month = () => {
 	// 1y	 = 86,400,000 + ( 3,600,000 if bisextile)
 
 	const maxDayInMonth = (month) => {
-		const maxDaysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-		return maxDayInMonth[month];
+		return month <= 11
+			? [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31](month)
+			: "null";
 	};
 
 	const itCurrentYearBisextile = () => {
@@ -41,11 +43,12 @@ const Month = () => {
 	return (
 		<div className="Month">
 			<main className="main">
-				<section className="datePicker">
-					<div className="datePicker__container">
+				<section className="datePicker_section">
+					<div className="datePicker">
 						<label htmlFor="date" className="datePicker__label">
 							date
 						</label>
+
 						<input
 							type="text"
 							className="datePicker__input"
@@ -54,7 +57,7 @@ const Month = () => {
 							onFocus={() => setFocused(true)}
 							onBlur={() => setFocused(false)}
 						/>
-						{focused && <div className="datePicker__grid">Grid</div>}
+						{focused && <Grid />}
 					</div>
 				</section>
 			</main>

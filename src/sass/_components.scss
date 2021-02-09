@@ -1,0 +1,53 @@
+.header {
+	height: 12rem;
+	background-color: var(--color-primary);
+	color: #eee;
+	font-weight: 600;
+	display: flex;
+	justify-content: center;
+
+	align-items: center;
+	font-size: 1rem;
+	&__icon {
+		width: 5rem;
+		fill: #eee;
+		margin-right: 2rem;
+	}
+	h1 {
+		font-size: 3rem;
+		background-image: linear-gradient(
+			to right,
+			var(--color-grey-dark-4),
+			var(--color-grey-light-2),
+			var(--color-grey-dark-4)
+		);
+
+		color: rgba(0, 0, 0, 0.2);
+		background-clip: text;
+		-webkit-background-clip: text;
+		// text-shadow: 0.5rem 1rem 2rem rgba(255, 255, 255, 0.2);
+	}
+}
+.datePicker {
+	max-width: 20rem;
+	display: grid;
+	grid-template-columns: 1fr 6fr;
+	grid-template-rows: 1 6fr;
+	&__label {
+		grid-column: 1/2;
+		grid-row: 1/2;
+		align-self: center;
+	}
+	&__input {
+		grid-column: 2/3;
+		grid-row: 1/2;
+	}
+	&__grid {
+		width: 16rem;
+		height: 16rem;
+		border: 1px solid #ccc;
+		background-color: #eee;
+		grid-column: 2/3;
+		grid-row: 2/3;
+	}
+}
