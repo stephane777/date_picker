@@ -21,7 +21,8 @@
 	"homepage": "https://github.com/stephane777/date_picker#readme",
 	"dependencies": {
 		"react": "^17.0.1",
-		"react-dom": "^17.0.1"
+		"react-dom": "^17.0.1",
+		"uuid": "^3.4.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.10",
