@@ -137,5 +137,8 @@ main {
 	}
 	&__day-num {
 		place-self: center;
+		&:hover {
+			cursor: pointer;
+		}
 	}
 }

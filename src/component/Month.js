@@ -1,52 +1,19 @@
 import React from "react";
 import Grid from "./Grid";
+import { utcTime_to_date } from "../utils";
 
 const Month = () => {
-	const [date, setDate] = React.useState({
-		day: "",
-		month: "",
-		year: "",
-	});
-	const [time, setTime] = React.useState(0);
+	const [time, setTime] = React.useState("");
 	const [focused, setFocused] = React.useState(false);
 	const dateRef = React.createRef("");
 
 	React.useEffect(() => {
-		const currentTime = new Date(Date.now());
-		const currentDay = make2Digit(currentTime.getUTCDate());
-		const currentMonth = make2Digit(currentTime.getMonth() + 1); // getFullYear is 0 based.
-		const currentYear = make2Digit(currentTime.getFullYear());
+		const { year, month, day } = utcTime_to_date(new Date(time).getTime());
+		dateRef.current.value = `${day}/${month}/${year}`;
+		if (!time) setTime(new Date().getTime());
+	}, [time]);
 
-		// dateRef.current.value = `${currentDay}/${currentMonth}/${currentYear}`;
-		dateRef.current.value = "2021/04/05";
-		// setDate({ day: currentDay, month: currentMonth, year: currentYear });
-		setDate({ day: "05", month: "04", year: "2021" });
-		// setTime(currentTime.getTime());
-		setTime(new Date("2021/04/05").getTime());
-	}, []);
-	// 1 min = 1000ms * 60 = 60,000
-	// 1h    = 60,000 * 60 = 3,600,000
-	// 1d    = 3,600,000 * 24 = 86,400,000
-	// 1y	 = 86,400,000 + ( 3,600,000 if bisextile)
-
-	const maxDayInMonth = (month) => {
-		return month <= 11
-			? [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31](month)
-			: "null";
-	};
-
-	const itCurrentYearBisextile = () => {
-		return (
-			(currentYear % 4 === 0 && currentYear % 100 !== 0) ||
-			currentYear % 400 === 0
-		);
-	};
-	const make2Digit = (num) => {
-		return num.toString().length === 1 ? "0".concat(num) : num;
-	};
-	const make1Digit = (num) => {
-		return num[0] === "0" ? num[1] : num;
-	};
+	// utcTime = 1613001947814 => return 2021/02/10
 
 	return (
 		<div className="Month">
@@ -65,8 +32,8 @@ const Month = () => {
 							onFocus={() => setFocused(true)}
 							onBlur={() => setFocused(false)}
 						/>
-						{focused && <Grid time={time} date={date} />}
-						{/* <Grid /> */}
+						{/* {focused && <Grid time={time} />} */}
+						<Grid setTime={setTime} time={time} />
 					</div>
 				</section>
 			</main>

@@ -1,15 +1,33 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import sprite from "../assets/img/sprite.svg";
+import { utcTime_to_date, getParam } from "../utils";
 
-const Grid = ({ time, date }) => {
+const Grid = ({ time, setTime }) => {
+	// time : 1613000844061
+
+	// year,
+	// month,
+	// day,
+	// firstDay,
+	// timeFirstDay,
+	// numberOfDayInMonth,
+	// lastDay,
+	// timeLastDay,
+	// weekDayFirstOfMonth,
+	// prevMonthDays,
+
+	const [param, setParam] = React.useState("");
+
 	React.useEffect(() => {
-		console.log(`time: ${time}`);
-		console.log(`Obj.keys: ${Object.keys(date)}`);
-		console.log(`Obj.values: ${Object.values(date)}`);
-		console.log(`weekday: ${new Date().getDay()}`);
-	}, []);
-	const week = () => {
+		setParam(getParam(time));
+	}, [time]);
+
+	const handleSelection = (time) => {
+		setTime(time);
+	};
+	// function to render weekdays in the header
+	const weekHeader = () => {
 		const dayList = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 		return dayList.map((day, i) => (
 			<div key={uuidv4()} className={`grid__day${i} grid__week`} key={uuidv4()}>
@@ -17,12 +35,19 @@ const Grid = ({ time, date }) => {
 			</div>
 		));
 	};
-	const month = (nbDays) => {
+	// function to render all the day from 1 to 30/31
+	const dayInMonth = (nbDays) => {
 		const arrayLength = { length: nbDays };
 		const monthArr = Array.from(arrayLength, (v, i) => i);
-		return monthArr.map((day) => {
+		const { timeFirstDay } = param;
+		return monthArr.map((day, i) => {
+			const time = timeFirstDay + 1000 * 60 * 60 * 24 * i;
 			return (
-				<div key={uuidv4()} className="grid__day-num">
+				<div
+					key={uuidv4()}
+					className="grid__day-num"
+					onClick={() => handleSelection(time)}
+				>
 					{day + 1}
 				</div>
 			);
@@ -30,17 +55,16 @@ const Grid = ({ time, date }) => {
 	};
 	// get all the day from the previous Month
 	const prevMonth = (currentWeekDay) => {
-		const firstDay = `${date.year}/${date.month}/01`;
-		const timeFirstDay = new Date(firstDay).getTime();
-		const prevMonthDays = Array.from(
-			{ length: currentWeekDay - 1 },
-			(v, i) => i
-		);
+		const { prevMonthDays, timeFirstDay } = param;
 		return prevMonthDays
 			.map((day, i) => {
 				const dayPrevMonth = timeFirstDay - 1000 * 60 * 60 * 24 * (i + 1);
 				const weekdayPrevMonth = new Date(dayPrevMonth).getDate();
-				return <div className="grid__day--prevMonth">{weekdayPrevMonth}</div>;
+				return (
+					<div key={uuidv4()} className="grid__day--prevMonth">
+						{weekdayPrevMonth}
+					</div>
+				);
 			})
 			.reverse();
 	};
@@ -54,10 +78,12 @@ const Grid = ({ time, date }) => {
 					<use href={`${sprite}#icon-triangle-right`}></use>
 				</svg>
 				<div className="grid__month-yyyy">April 2021</div>
-				{week()}
+				{weekHeader()}
 				<div className="grid__background"></div>
-				{prevMonth(new Date(`${date.year}/${date.month}/01`).getDay())}
-				{month(31)}
+				{param &&
+					param.weekDayFirstOfMonth > 0 &&
+					prevMonth(param.weekDayFirstOfMonth)}
+				{dayInMonth(param.numberOfDayInMonth)}
 			</div>
 		</div>
 	);
