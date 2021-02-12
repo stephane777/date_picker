@@ -5,6 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "webpack serve --mode development --open --hot",
+		"devServer": "live-server --browser FIREFOX",
 		"build": "webpack --mode production",
 		"test": "webpack --mode development"
 	},
@@ -20,7 +21,8 @@
 	"homepage": "https://github.com/stephane777/date_picker#readme",
 	"dependencies": {
 		"react": "^17.0.1",
-		"react-dom": "^17.0.1"
+		"react-dom": "^17.0.1",
+		"uuid": "^3.4.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.12.10",

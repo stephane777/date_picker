@@ -1,60 +1,110 @@
 import React from "react";
+import Grid from "./Grid";
+import {
+	utcTime_to_date,
+	maxDayInMonth,
+	isCurrentYearBisextile,
+} from "../utils";
 
-const Month = () => {
-	const [date, setDate] = React.useState({
-		day: "",
-		month: "",
-		year: "",
-	});
-	const [focused, setFocused] = React.useState(false);
+const Month = ({ focused, setFocused }) => {
+	const [time, setTime] = React.useState("");
+
+	const [error, setError] = React.useState("");
 	const dateRef = React.createRef("");
 
-	// 1 min = 1000ms * 60 = 60,000
-	// 1h    = 60,000 * 60 = 3,600,000
-	// 1d    = 3,600,000 * 24 = 86,400,000
-	// 1y	 = 86,400,000 + ( 3,600,000 if bisextile)
-
-	const maxDayInMonth = (month) => {
-		const maxDaysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-		return maxDayInMonth[month];
-	};
-
-	const itCurrentYearBisextile = () => {
-		return (
-			(currentYear % 4 === 0 && currentYear % 100 !== 0) ||
-			currentYear % 400 === 0
-		);
-	};
-	const make2Digit = (num) => {
-		return num.toString().length === 1 ? "0".concat(num) : num;
-	};
 	React.useEffect(() => {
-		const currentDate = new Date(Date.now());
-		const currentDay = make2Digit(currentDate.getUTCDate());
-		const currentMonth = make2Digit(currentDate.getMonth() + 1); // getFullYear is 0 based.
-		const currentYear = make2Digit(currentDate.getFullYear());
+		if (time) {
+			const { year, month, day } = utcTime_to_date(new Date(time).getTime());
 
-		dateRef.current.value = `${currentDay}/${currentMonth}/${currentYear}`;
-		setDate({ day: currentDay, month: currentMonth, year: currentYear });
-	}, []);
+			dateRef.current.value = `${day}/${month}/${year}`;
+		}
+		if (!time) setTime(new Date().getTime());
+	}, [time]);
 
+	const handleKeyPress = (event) => {
+		const {
+			charCode,
+			target: { value },
+		} = event;
+		if (charCode === 13) {
+			const { valid, date } = isValidFormat(value);
+
+			if (valid) {
+				setTime(new Date(date).getTime());
+			}
+		}
+	};
+
+	const isValidFormat = (date) => {
+		try {
+			let dd, mm, yyyy;
+			const regex1 = /\//g;
+			const regex2 = /\-/g;
+			const matchFormat1 = date.match(regex1)
+				? date.match(regex1).length === 2
+				: false;
+			const matchFormat2 = date.match(regex2)
+				? date.match(regex2).length === 2
+				: false;
+			const isValidFormatWithSeparator =
+				/\d{2}(\/|-)\d{2}(\/|-)\d{4}/g.test(date) &&
+				(matchFormat1 || matchFormat2);
+			const isValidFormatNoSeparator = /\d{8}/.test(date);
+			// console.log(`isValidFomatNoSeparator: ${isValidFormatNoSeparator}`);
+			if (isValidFormatWithSeparator) {
+				[dd, mm, yyyy] = date.split(/\/|\-/);
+				checkDate(+dd, +mm, +yyyy);
+			}
+			if (isValidFormatNoSeparator) {
+				dd = date.slice(0, 2);
+				mm = date.slice(2, 4);
+				yyyy = date.slice(4, 8);
+				checkDate(+dd, +mm, +yyyy);
+			}
+			if (!isValidFormatNoSeparator && !isValidFormatWithSeparator) {
+				throw "Format not valid expected 'DD/MM/YYYY' or 'DD-MM-YYYY' ";
+			}
+			setError("");
+			return { valid: true, date: `${yyyy}/${mm}/${dd}` };
+		} catch (e) {
+			setError(e.toString());
+
+			return { valid: false };
+		}
+	};
+	const checkDate = (dd, mm, yyyy) => {
+		if (mm === 0 || mm > 12) {
+			throw `Format not valid ${dd}/${mm}/${yyyy} `;
+		}
+		const maxDay =
+			maxDayInMonth(mm - 1) + (isCurrentYearBisextile(yyyy) ? 1 : 0);
+
+		if (dd === 0 || dd > maxDay) {
+			throw `Format not valid: ${dd}/${mm}/${yyyy}`;
+		}
+	};
 	return (
 		<div className="Month">
 			<main className="main">
-				<section className="datePicker">
-					<div className="datePicker__container">
+				<section className="datePicker_section">
+					<div className="datePicker">
 						<label htmlFor="date" className="datePicker__label">
-							date
+							Date
 						</label>
+						{error && <span className="datePicker__error">{error}</span>}
 						<input
 							type="text"
 							className="datePicker__input"
+							placeholder="DD/MM/YYYY"
 							id="date"
 							ref={dateRef}
 							onFocus={() => setFocused(true)}
-							onBlur={() => setFocused(false)}
+							// onBlur={() => setFocused(false)}
+							onKeyPress={handleKeyPress}
+							onChange={() => setError("")}
 						/>
-						{focused && <div className="datePicker__grid">Grid</div>}
+
+						{!error && focused && <Grid setTime={setTime} time={time} />}
 					</div>
 				</section>
 			</main>
