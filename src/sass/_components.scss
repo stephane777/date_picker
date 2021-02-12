@@ -1,25 +1,29 @@
 .Month {
-	height: calc(100% - 12rem);
+	height: calc(100% - 30rem);
+	@include respond(phone) {
+		height: calc(100% - 24rem);
+	}
 }
-main {
-	height: 100%;
-	display: flex;
-	justify-content: center;
-	margin-top: 12rem;
-}
+
 .header {
 	height: 12rem;
 	background-color: var(--color-primary);
-	color: #eee;
+	color: var(--color-grey-light-5);
 	font-weight: 600;
 	display: flex;
 	justify-content: center;
 
 	align-items: center;
 	font-size: 1rem;
+	@include respond(tab-land) {
+		font-size: 56.25%; // 1rem =9px; 10px/16px = 62.5%
+	}
+	@include respond(phone) {
+		height: 6rem;
+	}
 	&__icon {
 		width: 5rem;
-		fill: #eee;
+		fill: var(--color-grey-light-5);
 		margin-right: 2rem;
 	}
 	h1 {
@@ -40,53 +44,80 @@ main {
 .datePicker {
 	max-width: 24rem;
 	display: grid;
+
 	grid-template-columns: 1fr 2fr 3fr;
-	grid-template-rows: 1fr 5fr;
+	grid-template-rows: 1rem 2rem 5fr;
+	&_section {
+		height: max-content;
+	}
+	&__grid {
+		position: relative;
+		grid-column: 2/4;
+		grid-row: 3/4;
+	}
+	&__arrow {
+		position: absolute;
+		top: 6px;
+		left: 25px;
+		width: 1.6rem;
+		height: 1.6rem;
+		border-left: 1px solid var(--color-grey-light-4);
+		border-bottom: 1px solid var(--color-grey-light-4);
+		transform: rotate(135deg);
+		z-index: 2;
+		background-color: var(--color-grey-light-5);
+	}
 	&__label {
 		grid-column: 1/2;
-		grid-row: 1/2;
+		grid-row: 2/3;
 		align-self: center;
+		font-size: 1.4rem;
+		margin-right: 2rem;
 	}
 	&__input {
 		grid-column: 2/3;
-		grid-row: 1/2;
-		font-size: 2rem;
+		grid-row: 2/3;
+		font-size: 1.4rem;
+		padding-left: 1rem;
 		&:focus {
 			outline: none;
 		}
 	}
-	&__grid {
-		// width: 16rem;
-		// height: 16rem;
-
-		grid-column: 2/4;
-		grid-row: 2/3;
+	&__error {
+		color: #f00;
+		grid-column: 2/3;
+		grid-row: 1/2;
+		align-self: end;
 	}
 }
 .grid {
 	display: grid;
 	grid-template-columns: repeat(7, 1fr);
-	grid-template-rows: repeat(7, 1fr);
-	border: 1px solid #ccc;
+	grid-template-rows: repeat(8, 1fr);
+	border: 1px solid var(--color-grey-light-4);
+	margin-top: 1.4rem;
 	// background-color: #eee;
 	&__background {
 		grid-column: 1/8;
 		grid-row: 1/3;
-		background-color: #eee;
+		background-color: var(--color-grey-light-5);
 		z-index: -2;
 	}
-	&__prev-month {
+	&__icon-prevMonth {
 		grid-column: 1/2;
 		grid-row: 1/2;
 		width: 2rem;
 		height: 2.4rem;
 		fill: var(--color-secondary);
 		place-self: center;
-		background-color: #eee;
+		background-color: var(--color-grey-light-5);
+		cursor: pointer;
 	}
-	&__day--prevMonth {
+	&__day--prevMonth,
+	&__day--nextMonth {
 		place-self: center;
-		color: #ccc;
+		color: var(--color-grey-light-4);
+		cursor: pointer;
 	}
 	&__month-yyyy {
 		grid-column: 2/7;
@@ -96,13 +127,14 @@ main {
 		font-size: 1.4rem;
 		color: var(--color-secondary);
 	}
-	&__next-month {
+	&__icon-nextMonth {
 		grid-column: 7/8;
 		grid-row: 1/2;
 		place-self: center;
 		width: 2rem;
 		height: 2.4rem;
 		fill: var(--color-secondary);
+		cursor: pointer;
 	}
 	&__week {
 		place-self: center;
@@ -136,9 +168,46 @@ main {
 		grid-row: 2/3;
 	}
 	&__day-num {
-		place-self: center;
+		// place-self: center;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		&--active {
+			background-color: var(--color-secondary);
+			border-radius: 5px;
+			color: var(--color-white);
+			margin: 2px;
+		}
+
 		&:hover {
 			cursor: pointer;
+		}
+	}
+}
+.footer {
+	height: 6rem;
+	background-color: var(--color-primary);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	&__paragraph {
+		color: var(--color-grey-light-4);
+		margin-left: 2rem;
+		font-size: 1.2rem;
+		font-weight: light;
+	}
+	&__icon-github {
+		width: 2rem;
+		height: 2rem;
+		fill: var(--color-grey-light-4);
+	}
+
+	&__link:hover {
+		& svg {
+			fill: var(--color-grey-dark-2);
+			transform: scale(1.2);
 		}
 	}
 }
