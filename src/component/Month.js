@@ -26,6 +26,9 @@ const Month = ({ focused, setFocused }) => {
 			charCode,
 			target: { value },
 		} = event;
+		if (![45, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57].includes(charCode)) {
+			event.preventDefault();
+		}
 		if (charCode === 13) {
 			const { valid, date } = isValidFormat(value);
 
@@ -111,4 +114,5 @@ const Month = ({ focused, setFocused }) => {
 		</div>
 	);
 };
+
 export default Month;

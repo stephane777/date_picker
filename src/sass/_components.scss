@@ -46,7 +46,7 @@
 	display: grid;
 
 	grid-template-columns: 1fr 2fr 3fr;
-	grid-template-rows: 1rem 2rem 5fr;
+	grid-template-rows: 1rem 4rem 5fr;
 	&_section {
 		height: max-content;
 	}
@@ -79,6 +79,8 @@
 		grid-row: 2/3;
 		font-size: 1.4rem;
 		padding-left: 1rem;
+		padding-top: 0.4rem;
+		padding-bottom: 0.4rem;
 		&:focus {
 			outline: none;
 		}

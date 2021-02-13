@@ -4,7 +4,14 @@ import sprite from "../assets/img/sprite.svg";
 const Footer = () => {
 	return (
 		<footer className="footer">
-			<a href="https://github.com/stephane777" className="footer__link">
+			<a
+				href="#"
+				className="footer__link"
+				target="_blank"
+				onClick={() =>
+					(window.location.href = "https://github.com/stephane777")
+				}
+			>
 				<svg className="footer__icon-github">
 					<use href={`${sprite}#icon-github`} className="grid__icon-use"></use>
 				</svg>
