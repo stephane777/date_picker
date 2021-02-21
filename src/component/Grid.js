@@ -3,23 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import sprite from "../assets/img/sprite.svg";
 import { getTimeFromDate, getParam } from "../utils";
 
-const Grid = ({ time, setTime }) => {
-	// time : 1613000844061
-
-	// PARAM properties :
-	// year,
-	// 	month,
-	// 	day,
-	// 	fullMonth: getMonth(month - 1),
-	//  numberOfDayInMonth,
-	// 	firstDay,
-	// 	timeFirstDay,
-	// 	weekDayFirstOfMonth,
-	// 	prevMonthDays,
-	//  lastDay,
-	// 	timeLastDay,
-	// 	weekDayLastOfMonth,
-	// 	nextMonthDays,
+const Grid = React.forwardRef(({ time, setTime, handlePickerFocus }, ref) => {
 
 	const [param, setParam] = React.useState("");
 	React.useEffect(() => {
@@ -113,8 +97,22 @@ const Grid = ({ time, setTime }) => {
 		const time = getTimeFromDate("01", nextMonth, nextYear);
 		setTime(time);
 	};
+
+	const handleClickOutside = ({ target }) =>
+	{
+		if(ref && ! ref.current.contains(target))
+			handlePickerFocus({focused: false})
+	}
+
+	React.useEffect(() => 
+	{
+		document.addEventListener("mousedown", handleClickOutside);
+
+		return () => document.removeEventListener("mousedown", handleClickOutside)
+	}, []);
+	
 	return (
-		<div className="datePicker__grid">
+		<div ref={ref} className="datePicker__grid">
 			<div className="datePicker__arrow"></div>
 			<div className="grid">
 				<svg className="grid__icon-prevMonth" onClick={handleGoToPreviousMonth}>
@@ -140,5 +138,6 @@ const Grid = ({ time, setTime }) => {
 			</div>
 		</div>
 	);
-};
+});
+
 export default Grid;

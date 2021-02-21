@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import Grid from "./Grid";
 import {
 	utcTime_to_date,
@@ -6,11 +6,11 @@ import {
 	isCurrentYearBisextile,
 } from "../utils";
 
-const Month = ({ focused, setFocused }) => {
+const DatePicker = ({ onFocusChange, focused }) => {
 	const [time, setTime] = React.useState("");
-
 	const [error, setError] = React.useState("");
 	const dateRef = React.createRef("");
+	const gridRef = useRef(null);
 
 	React.useEffect(() => {
 		if (time) {
@@ -37,6 +37,12 @@ const Month = ({ focused, setFocused }) => {
 			}
 		}
 	};
+
+	const handlePickerFocus = ({focused}) =>
+	{
+		if(onFocusChange)
+			onFocusChange({focused});
+	}
 
 	const isValidFormat = (date) => {
 		try {
@@ -86,6 +92,7 @@ const Month = ({ focused, setFocused }) => {
 			throw `Format not valid: ${dd}/${mm}/${yyyy}`;
 		}
 	};
+
 	return (
 		<div className="Month">
 			<main className="main">
@@ -101,13 +108,11 @@ const Month = ({ focused, setFocused }) => {
 							placeholder="DD/MM/YYYY"
 							id="date"
 							ref={dateRef}
-							onFocus={() => setFocused(true)}
-							// onBlur={() => setFocused(false)}
+							onFocus={(e) => handlePickerFocus({focused: true})}
 							onKeyPress={handleKeyPress}
 							onChange={() => setError("")}
 						/>
-
-						{!error && focused && <Grid setTime={setTime} time={time} />}
+						{!error && focused && <Grid handlePickerFocus={handlePickerFocus} ref={gridRef} setTime={setTime} time={time} />}
 					</div>
 				</section>
 			</main>
@@ -115,4 +120,4 @@ const Month = ({ focused, setFocused }) => {
 	);
 };
 
-export default Month;
+export default DatePicker;
